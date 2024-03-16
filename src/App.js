@@ -4,11 +4,13 @@ import './App.css';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users';
 import Search from './components/users/Search';
+import Alert from './components/layout/Alert';
 
 class App extends Component {
   state = {
     users: [],
-    loading: false
+    loading: false,
+    alert: null
   }
 
   // Fetch users at load
@@ -20,6 +22,7 @@ class App extends Component {
   //   this.setState({ users: res.data, loading: false });
   // }
 
+  // Search users request
   searchUsers = async (text) => {
     this.setState({ loading: true });
 
@@ -30,14 +33,31 @@ class App extends Component {
     this.setState({ users: res.data.items, loading: false });
   }
 
+  // Clear users from state
+  clearUsers = () => this.setState({ users: [], loading: false })
+
+  // Set alert for empty field
+  setAlert = (msg, type) => {
+    this.setState({ alert: { msg, type }});
+
+    setTimeout(() => this.setState({ alert: null }), 5000);
+  }
+
   render(){
+    const { users, loading, alert } = this.state;
+
     return (
       <div className="App">
         <Navbar />
-        
         <div className="container">
-          <Search searchUsers={this.searchUsers}/>
-          <Users loading = {this.state.loading} users = {this.state.users}/>
+          <Alert alert={alert}/>
+          <Search 
+            searchUsers={this.searchUsers} 
+            clearUsers={this.clearUsers} 
+            showClear={users.length > 0 ? true : false}
+            setAlert={this.setAlert}
+          />
+          <Users loading = {loading} users = {users}/>
         </div>
       </div>
     );
