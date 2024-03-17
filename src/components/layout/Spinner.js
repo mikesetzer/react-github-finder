@@ -1,4 +1,3 @@
-
 import spinner from './spinner.gif';
 
 const Spinner = () => {
